@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 
 const projects = [
-  { title: "EmpowerGen Africa", type: "Nonprofit platform · 2026", summary: "A bilingual digital home for youth programs, stories, events and community action across Ottawa and Africa.", image: "/empowergen-preview.png", href: "https://empowergenafrica.org", tone: "coral", status: "Live" },
-  { title: "Professional portfolio", type: "Data + technology · 2026", summary: "A focused professional portfolio presenting analytical work, technical strengths and practical business outcomes.", image: "/pro-portfolio-preview.png", href: "https://mikekanyatsi-portfolio.vercel.app", tone: "blue", status: "Live" },
-  { title: "Your website could be here", type: "Next collaboration", summary: "A reserved showcase slot for the next business ready for a clearer, faster and more memorable website.", image: "", href: "#request", tone: "lime", status: "Open" },
+  { title: "EmpowerGen Africa", type: "Nonprofit platform · 2026", summary: "A bilingual digital home for youth programs, stories, events and community action across Ottawa and Africa.", image: "/empowergen-preview.png", href: "https://empowergenafrica.org", displayUrl: "empowergenafrica.org", tone: "coral", status: "Live" },
+  { title: "Professional portfolio", type: "Data + technology · 2026", summary: "A focused professional portfolio presenting analytical work, technical strengths and practical business outcomes.", image: "/pro-portfolio-preview.png", href: "https://mikekanyatsi-portfolio.vercel.app", displayUrl: "mikekanyatsi-portfolio.vercel.app", tone: "blue", status: "Live" },
+  { title: "Your website could be here", type: "Next collaboration", summary: "A reserved showcase slot for the next business ready for a clearer, faster and more memorable website.", image: "", href: "#request", displayUrl: "yourbusiness.ca", tone: "lime", status: "Open" },
 ];
 
 const words = {
@@ -101,7 +101,21 @@ export default function Portfolio() {
         <div className="project-grid">{projects.map((project, index) => (
           <a className={`project-card ${project.tone} ${index === 0 ? "featured" : ""}`} href={project.href} target={project.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" key={project.title} data-reveal onPointerMove={tiltCard} onPointerLeave={resetCard}>
             <div className="project-top"><span>0{index + 1}</span><span>{project.status} <i /></span></div>
-            <div className={`project-preview ${!project.image ? "placeholder-preview" : ""}`}>{project.image ? <img src={project.image} alt={`${project.title} website preview`} /> : <><span>YOUR<br />PROJECT</span><i>+</i></>}</div>
+            {project.image ? (
+              <div className="project-preview browser-preview">
+                <div className="browser-bar" aria-hidden="true">
+                  <span className="browser-controls"><i /><i /><i /></span>
+                  <span className="browser-address"><i>●</i>{project.displayUrl}</span>
+                  <span className="browser-open">↗</span>
+                </div>
+                <div className="browser-viewport">
+                  <img src={project.image} alt={`${project.title} website homepage preview`} />
+                  <span className="preview-action">Open live website <i>↗</i></span>
+                </div>
+              </div>
+            ) : (
+              <div className="project-preview placeholder-preview"><span>YOUR<br />PROJECT</span><i>+</i></div>
+            )}
             <div className="project-copy"><p>{project.type}</p><h3>{project.title}</h3><p>{project.summary}</p><b>{index < 2 ? t.view : t.start} ↗</b></div>
           </a>
         ))}</div>

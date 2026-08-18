@@ -12,7 +12,7 @@ const words = {
   en: {
     nav: ["Work", "Services", "Request"], start: "Request a site", availability: "Booking new projects · Canada", kicker: "Web design + creative development",
     headlineA: "Clear websites.", headlineB: "More", headlineAccent: "movement.", intro: "I design bilingual, modern websites that make established businesses easier to understand, trust and contact.",
-    primary: "See the work", secondary: "Start a project", proof: ["Ottawa based", "EN + FR", "Design to launch"], workLabel: "Selected work", workTitle: "Real projects, not generic demos.", view: "View live site",
+    primary: "See the work", secondary: "Start a project", proof: ["Ottawa based", "EN + FR", "Design to launch"], workLabel: "Selected work", workTitle: "Distinct concepts, built like real websites.", view: "View live site",
     servicesLabel: "What I deliver", servicesTitle: "A focused studio built around your business.",
     services: [["Strategy + structure", "A clear message, page plan and conversion path before visual design begins."], ["Design + motion", "A distinctive interface with purposeful animation, strong hierarchy and accessible reading."], ["Build + integration", "Responsive development connected to your domain, CMS, database or existing business platform."]],
     process: ["Discover", "Design", "Build", "Launch"], processCopy: "One working direction, frequent previews and a clean handoff. No months of disconnected mockups.",
@@ -24,7 +24,7 @@ const words = {
   fr: {
     nav: ["Projets", "Services", "Demande"], start: "Demander un site", availability: "Nouveaux projets · Canada", kicker: "Design web + développement créatif",
     headlineA: "Des sites clairs.", headlineB: "Plus de", headlineAccent: "mouvement.", intro: "Je conçois des sites bilingues et modernes qui rendent les entreprises établies plus faciles à comprendre, à croire et à contacter.",
-    primary: "Voir les projets", secondary: "Démarrer un projet", proof: ["Basé à Ottawa", "FR + EN", "Du design au lancement"], workLabel: "Projets sélectionnés", workTitle: "De vrais projets, pas des démos génériques.", view: "Voir le site",
+    primary: "Voir les projets", secondary: "Démarrer un projet", proof: ["Basé à Ottawa", "FR + EN", "Du design au lancement"], workLabel: "Projets sélectionnés", workTitle: "Des concepts distinctifs, bâtis comme de vrais sites.", view: "Voir le site",
     servicesLabel: "Ce que je livre", servicesTitle: "Un studio concentré sur votre entreprise.",
     services: [["Stratégie + structure", "Un message clair, un plan de pages et un parcours de conversion avant le design visuel."], ["Design + mouvement", "Une interface distinctive avec animation utile, hiérarchie forte et lecture accessible."], ["Développement + intégration", "Un site adaptatif relié à votre domaine, CMS, base de données ou plateforme existante."]],
     process: ["Découvrir", "Designer", "Bâtir", "Lancer"], processCopy: "Une direction fonctionnelle, des aperçus fréquents et un transfert propre. Pas des mois de maquettes isolées.",

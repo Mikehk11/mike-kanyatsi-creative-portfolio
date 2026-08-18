@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-async function render() {
+async function render(path = "/", init = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
+    new Request(`http://localhost${path}`, { ...init, headers: { accept: "text/html", ...(init.headers ?? {}) } }),
     {
       ASSETS: {
         fetch: async () => new Response("Not found", { status: 404 }),
@@ -51,4 +51,19 @@ test("renders the complete project request and Teams preference flow", async () 
   assert.match(html, /\$500–\$1k CAD/);
   assert.match(html, />18:00</);
   assert.match(html, /mikekanyatsi-portfolio\.vercel\.app/);
+  assert.match(html, /linkedin\.com\/in\/mikekanyatsi/);
+  assert.match(html, /MIKE/);
+  assert.match(html, /Send my request/);
+  assert.match(html, /sent securely to Mike/i);
+});
+
+test("request endpoint fails safely when email delivery is not configured", async () => {
+  const response = await render("/api/request", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ name: "Test" }),
+  });
+
+  assert.equal(response.status, 503);
+  assert.deepEqual(await response.json(), { error: "Email delivery is not configured." });
 });

@@ -16,10 +16,10 @@ const words = {
     servicesLabel: "What I deliver", servicesTitle: "A focused studio built around your business.",
     services: [["Strategy + structure", "A clear message, page plan and conversion path before visual design begins."], ["Design + motion", "A distinctive interface with purposeful animation, strong hierarchy and accessible reading."], ["Build + integration", "Responsive development connected to your domain, CMS, database or existing business platform."]],
     process: ["Discover", "Design", "Build", "Launch"], processCopy: "One working direction, frequent previews and a clean handoff. No months of disconnected mockups.",
-    requestLabel: "Project request", requestTitle: "Tell me what the website needs to do.", requestIntro: "Share the basics now. I’ll review the request, reply by email and confirm a free time before sending a Microsoft Teams invitation.", email: "Or email directly", portfolio: "View my professional portfolio", flexible: "Flexible",
+    requestLabel: "Project request", requestTitle: "Tell me what the website needs to do.", requestIntro: "Share the basics now. I’ll review your request and reply directly by email. If you choose Teams, I’ll confirm the time before sending the invitation.", email: "Or email directly", portfolio: "View my professional portfolio", linkedin: "Connect on LinkedIn", flexible: "Flexible",
     labels: { name: "Your name", email: "Email address", company: "Business / organization", website: "Current website (optional)", service: "What do you need?", budget: "Estimated budget", message: "What should the new website improve?", call: "Preferred Teams call date", time: "Preferred time", teams: "I would like a Microsoft Teams discovery call" },
     options: ["New website", "Website redesign", "Landing page", "Visual refresh", "Existing platform integration"], budgets: ["Not sure yet", "$500–$1k CAD", "$2k–$4k CAD", "$4k–$8k CAD", "$8k–$15k CAD", "$15k+ CAD"],
-    submit: "Prepare my request", privacy: "This opens a prepared email to Mike. Your preferred call time is confirmed before the Teams invitation is sent.", ready: "Your project request is ready in your email app.", footer: "Independent web design · Ottawa / Montréal / Remote",
+    submit: "Send my request", sending: "Sending request…", sentButton: "Request sent", privacy: "Your request is sent securely to Mike. Your preferred call time is confirmed before the Teams invitation is sent.", ready: "Your request has been sent. I’ll reply directly to your email.", error: "The request could not be sent. Please try again or email me directly.", footer: "Independent web design · Ottawa / Montréal / Remote",
   },
   fr: {
     nav: ["Projets", "Services", "Demande"], start: "Demander un site", availability: "Nouveaux projets · Canada", kicker: "Design web + développement créatif",
@@ -28,10 +28,10 @@ const words = {
     servicesLabel: "Ce que je livre", servicesTitle: "Un studio concentré sur votre entreprise.",
     services: [["Stratégie + structure", "Un message clair, un plan de pages et un parcours de conversion avant le design visuel."], ["Design + mouvement", "Une interface distinctive avec animation utile, hiérarchie forte et lecture accessible."], ["Développement + intégration", "Un site adaptatif relié à votre domaine, CMS, base de données ou plateforme existante."]],
     process: ["Découvrir", "Designer", "Bâtir", "Lancer"], processCopy: "Une direction fonctionnelle, des aperçus fréquents et un transfert propre. Pas des mois de maquettes isolées.",
-    requestLabel: "Demande de projet", requestTitle: "Expliquez-moi ce que le site doit accomplir.", requestIntro: "Partagez l’essentiel. Je révise la demande, réponds par courriel et confirme une plage libre avant d’envoyer l’invitation Microsoft Teams.", email: "Ou écrire directement", portfolio: "Voir mon portfolio professionnel", flexible: "Flexible",
+    requestLabel: "Demande de projet", requestTitle: "Expliquez-moi ce que le site doit accomplir.", requestIntro: "Partagez l’essentiel. Je révise votre demande et réponds directement par courriel. Pour Teams, je confirme l’heure avant l’invitation.", email: "Ou écrire directement", portfolio: "Voir mon portfolio professionnel", linkedin: "Me joindre sur LinkedIn", flexible: "Flexible",
     labels: { name: "Votre nom", email: "Adresse courriel", company: "Entreprise / organisme", website: "Site actuel (facultatif)", service: "De quoi avez-vous besoin?", budget: "Budget estimé", message: "Que doit améliorer le nouveau site?", call: "Date préférée pour Teams", time: "Heure préférée", teams: "Je souhaite un appel découverte sur Microsoft Teams" },
     options: ["Nouveau site", "Refonte de site", "Page d’atterrissage", "Rafraîchissement visuel", "Intégration à une plateforme existante"], budgets: ["Pas encore certain", "500 $–1 k$ CAD", "2 k$–4 k$ CAD", "4 k$–8 k$ CAD", "8 k$–15 k$ CAD", "15 k$+ CAD"],
-    submit: "Préparer ma demande", privacy: "Ceci ouvre un courriel préparé pour Mike. La plage horaire est confirmée avant l’envoi de l’invitation Teams.", ready: "Votre demande est prête dans votre application courriel.", footer: "Design web indépendant · Ottawa / Montréal / À distance",
+    submit: "Envoyer ma demande", sending: "Envoi en cours…", sentButton: "Demande envoyée", privacy: "Votre demande est envoyée de façon sécurisée à Mike. La plage horaire est confirmée avant l’invitation Teams.", ready: "Votre demande a été envoyée. Je vous répondrai directement par courriel.", error: "La demande n’a pas pu être envoyée. Réessayez ou écrivez-moi directement.", footer: "Design web indépendant · Ottawa / Montréal / À distance",
   },
 };
 
@@ -40,6 +40,8 @@ type Language = keyof typeof words;
 export default function Portfolio() {
   const [language, setLanguage] = useState<Language>("en");
   const [submitted, setSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState(false);
   const [meetingDate, setMeetingDate] = useState("");
   const heroRef = useRef<HTMLElement>(null);
   const t = words[language];
@@ -69,19 +71,38 @@ export default function Portfolio() {
   };
   const resetCard = (event: React.PointerEvent<HTMLElement>) => { event.currentTarget.style.setProperty("--card-x", "0deg"); event.currentTarget.style.setProperty("--card-y", "0deg"); };
 
-  const submitRequest = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitRequest = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const subject = `Website request — ${form.get("company") || form.get("name")}`;
-    const body = [`Name: ${form.get("name")}`, `Email: ${form.get("email")}`, `Business: ${form.get("company")}`, `Current website: ${form.get("website") || "None provided"}`, `Project type: ${form.get("service")}`, `Budget: ${form.get("budget")}`, `Teams call requested: ${form.get("teams") ? "Yes" : "No"}`, `Preferred date: ${form.get("date") || "Flexible"}`, `Preferred time: ${form.get("time") || "Flexible"}`, "", "Project goals:", `${form.get("message")}`].join("\n");
-    setSubmitted(true);
-    window.location.href = `mailto:mmkanyatsi@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
+    setIsSending(true);
+    setSendError(false);
+
+    try {
+      const response = await fetch("/api/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.get("name"), email: form.get("email"), company: form.get("company"), website: form.get("website"),
+          service: form.get("service"), budget: form.get("budget"), message: form.get("message"), teams: Boolean(form.get("teams")),
+          date: form.get("date"), time: form.get("time"), companyUrl: form.get("companyUrl"),
+        }),
+      });
+      if (!response.ok) throw new Error("Request failed");
+      setSubmitted(true);
+      formElement.reset();
+      setMeetingDate("");
+    } catch {
+      setSendError(true);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
     <main className="site-shell">
       <nav className="topbar" aria-label="Primary navigation">
-        <a className="brand" href="#top">MIKE<span> / WEB</span></a>
+        <a className="brand signature" href="#top" aria-label="Mike Web — home"><span className="signature-mark" aria-hidden="true"><i /><i /><b /></span><span>MIKE <em>/ WEB</em></span></a>
         <div className="nav-links"><a href="#work">{t.nav[0]}</a><a href="#services">{t.nav[1]}</a><a href="#request">{t.nav[2]}</a></div>
         <div className="nav-actions"><button className="language" onClick={() => setLanguage(language === "en" ? "fr" : "en")}>{language === "en" ? "FR" : "EN"}</button><a className="nav-cta" href="#request">{t.start}<span>↗</span></a></div>
       </nav>
@@ -130,19 +151,20 @@ export default function Portfolio() {
       </section>
 
       <section className="request compact-section" id="request">
-        <div className="request-intro" data-reveal><p>{t.requestLabel}</p><h2>{t.requestTitle}</h2><p>{t.requestIntro}</p><div className="contact-links"><a href="mailto:mmkanyatsi@gmail.com">{t.email}<strong>mmkanyatsi@gmail.com</strong></a><a href="https://mikekanyatsi-portfolio.vercel.app" target="_blank" rel="noreferrer">{t.portfolio}<strong>Data + technology ↗</strong></a></div><div className="calendar-mark" aria-hidden="true"><span>TEAMS</span><b>30</b><i>MIN</i></div></div>
+        <div className="request-intro" data-reveal><p>{t.requestLabel}</p><h2>{t.requestTitle}</h2><p>{t.requestIntro}</p><div className="contact-links"><a href="mailto:mmkanyatsi@gmail.com">{t.email}<strong>mmkanyatsi@gmail.com</strong></a><a href="https://www.linkedin.com/in/mikekanyatsi/" target="_blank" rel="noreferrer">{t.linkedin}<strong>LinkedIn ↗</strong></a><a href="https://mikekanyatsi-portfolio.vercel.app" target="_blank" rel="noreferrer">{t.portfolio}<strong>Data + technology ↗</strong></a></div><div className="calendar-mark" aria-hidden="true"><span>TEAMS</span><b>30</b><i>MIN</i></div></div>
         <form className="request-form" onSubmit={submitRequest} data-reveal>
+          <input className="honeypot" type="text" name="companyUrl" tabIndex={-1} autoComplete="off" aria-hidden="true" />
           <div className="field"><label htmlFor="name">{t.labels.name}</label><input id="name" name="name" autoComplete="name" required /></div><div className="field"><label htmlFor="email">{t.labels.email}</label><input id="email" name="email" type="email" autoComplete="email" required /></div>
           <div className="field"><label htmlFor="company">{t.labels.company}</label><input id="company" name="company" autoComplete="organization" required /></div><div className="field"><label htmlFor="website">{t.labels.website}</label><input id="website" name="website" type="url" placeholder="https://" /></div>
           <div className="field"><label htmlFor="service">{t.labels.service}</label><select id="service" name="service" required defaultValue=""><option value="" disabled>—</option>{t.options.map((option) => <option key={option}>{option}</option>)}</select></div><div className="field"><label htmlFor="budget">{t.labels.budget}</label><select id="budget" name="budget" required defaultValue=""><option value="" disabled>—</option>{t.budgets.map((option) => <option key={option}>{option}</option>)}</select></div>
           <div className="field full"><label htmlFor="message">{t.labels.message}</label><textarea id="message" name="message" rows={4} required /></div>
           <label className="teams-choice"><input type="checkbox" name="teams" defaultChecked /><span><i>✓</i>{t.labels.teams}</span></label>
           <div className="field"><label htmlFor="date">{t.labels.call}</label><input id="date" name="date" type="date" min={today} value={meetingDate} onChange={(event) => setMeetingDate(event.target.value)} /></div><div className="field"><label htmlFor="time">{t.labels.time}</label><select id="time" name="time" defaultValue=""><option value="">{t.flexible}</option>{meetingTimes.map((time) => <option key={time}>{time}</option>)}</select></div>
-          <div className="form-footer"><p>{submitted ? t.ready : t.privacy}</p><button type="submit">{t.submit}<span>↗</span></button></div>
+          <div className={`form-footer ${submitted ? "sent" : ""}`}><p role="status" aria-live="polite">{sendError ? t.error : submitted ? t.ready : t.privacy}</p><button type="submit" disabled={isSending || submitted}>{isSending ? t.sending : submitted ? t.sentButton : t.submit}<span>{submitted ? "✓" : "↗"}</span></button></div>
         </form>
       </section>
 
-      <footer><a className="brand" href="#top">MIKE<span> / WEB</span></a><p>{t.footer}</p><a href="mailto:mmkanyatsi@gmail.com">mmkanyatsi@gmail.com</a></footer>
+      <footer><a className="brand signature" href="#top" aria-label="Mike Web — home"><span className="signature-mark" aria-hidden="true"><i /><i /><b /></span><span>MIKE <em>/ WEB</em></span></a><p>{t.footer}</p><div className="footer-links"><a href="https://www.linkedin.com/in/mikekanyatsi/" target="_blank" rel="noreferrer">LinkedIn ↗</a><a href="mailto:mmkanyatsi@gmail.com">mmkanyatsi@gmail.com</a></div></footer>
     </main>
   );
 }

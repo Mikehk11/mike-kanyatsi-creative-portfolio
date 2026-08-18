@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Mike Kanyatsi", url: siteUrl }],
   creator: "Mike Kanyatsi",
   category: "Web design and development",
+  verification: {
+    google: "JKm5mDnHC7-Q6gSb_bjdbIRYzpVinpUnnjDCRJEGBZ0",
+  },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     shortcut: "/icon.svg",

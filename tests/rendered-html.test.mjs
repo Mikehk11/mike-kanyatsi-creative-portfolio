@@ -28,10 +28,10 @@ test("server-renders the portfolio and live project previews", async () => {
   const html = await response.text();
   assert.match(html, /Mike Kanyatsi/);
   assert.match(html, /Clear websites/);
-  assert.match(html, /EmpowerGen Africa/);
-  assert.match(html, /empowergen-preview\.png/);
-  assert.match(html, /Professional portfolio/);
-  assert.match(html, /pro-portfolio-preview\.png/);
+  assert.match(html, /Northline Atelier/);
+  assert.match(html, /northline-preview\.png/);
+  assert.match(html, /Luma Dental/);
+  assert.match(html, /luma-preview\.png/);
   assert.match(html, /Your website could be here/);
 });
 
@@ -48,4 +48,7 @@ test("renders the complete project request and Teams preference flow", async () 
   assert.match(html, /name="time"/);
   assert.match(html, /Microsoft Teams discovery call/);
   assert.match(html, /preferred call time is confirmed/i);
+  assert.match(html, /\$500–\$1k CAD/);
+  assert.match(html, />18:00</);
+  assert.match(html, /mikekanyatsi-portfolio\.vercel\.app/);
 });

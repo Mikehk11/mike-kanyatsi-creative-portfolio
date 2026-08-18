@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 const projects = [
-  { title: "EmpowerGen Africa", type: "Nonprofit platform · 2026", summary: "A bilingual digital home for youth programs, stories, events and community action across Ottawa and Africa.", image: "/empowergen-preview.png", href: "https://empowergenafrica.org", displayUrl: "empowergenafrica.org", tone: "coral", status: "Live" },
-  { title: "Professional portfolio", type: "Data + technology · 2026", summary: "A focused professional portfolio presenting analytical work, technical strengths and practical business outcomes.", image: "/pro-portfolio-preview.png", href: "https://mikekanyatsi-portfolio.vercel.app", displayUrl: "mikekanyatsi-portfolio.vercel.app", tone: "blue", status: "Live" },
+  { title: "Northline Atelier", type: "Residential design concept · 2026", summary: "An editorial renovation website where architectural typography, 3D imagery and quiet motion create a premium first impression.", image: "/northline-preview.png", href: "https://northlineatelier.vercel.app", displayUrl: "northlineatelier.vercel.app", tone: "coral", status: "Live" },
+  { title: "Luma Dental", type: "Healthcare website concept · 2026", summary: "A bright, reassuring clinic experience built around clear care options, trust signals and a direct appointment journey.", image: "/luma-preview.png", href: "https://lumadental.vercel.app", displayUrl: "lumadental.vercel.app", tone: "blue", status: "Live" },
   { title: "Your website could be here", type: "Next collaboration", summary: "A reserved showcase slot for the next business ready for a clearer, faster and more memorable website.", image: "", href: "#request", displayUrl: "yourbusiness.ca", tone: "lime", status: "Open" },
 ];
 
@@ -16,9 +16,9 @@ const words = {
     servicesLabel: "What I deliver", servicesTitle: "A focused studio built around your business.",
     services: [["Strategy + structure", "A clear message, page plan and conversion path before visual design begins."], ["Design + motion", "A distinctive interface with purposeful animation, strong hierarchy and accessible reading."], ["Build + integration", "Responsive development connected to your domain, CMS, database or existing business platform."]],
     process: ["Discover", "Design", "Build", "Launch"], processCopy: "One working direction, frequent previews and a clean handoff. No months of disconnected mockups.",
-    requestLabel: "Project request", requestTitle: "Tell me what the website needs to do.", requestIntro: "Share the basics now. I’ll review the request, reply by email and confirm a free time before sending a Microsoft Teams invitation.", email: "Or email directly",
+    requestLabel: "Project request", requestTitle: "Tell me what the website needs to do.", requestIntro: "Share the basics now. I’ll review the request, reply by email and confirm a free time before sending a Microsoft Teams invitation.", email: "Or email directly", portfolio: "View my professional portfolio", flexible: "Flexible",
     labels: { name: "Your name", email: "Email address", company: "Business / organization", website: "Current website (optional)", service: "What do you need?", budget: "Estimated budget", message: "What should the new website improve?", call: "Preferred Teams call date", time: "Preferred time", teams: "I would like a Microsoft Teams discovery call" },
-    options: ["New website", "Website redesign", "Landing page", "Visual refresh", "Existing platform integration"], budgets: ["Not sure yet", "$2k–$4k CAD", "$4k–$8k CAD", "$8k–$15k CAD", "$15k+ CAD"],
+    options: ["New website", "Website redesign", "Landing page", "Visual refresh", "Existing platform integration"], budgets: ["Not sure yet", "$500–$1k CAD", "$2k–$4k CAD", "$4k–$8k CAD", "$8k–$15k CAD", "$15k+ CAD"],
     submit: "Prepare my request", privacy: "This opens a prepared email to Mike. Your preferred call time is confirmed before the Teams invitation is sent.", ready: "Your project request is ready in your email app.", footer: "Independent web design · Ottawa / Montréal / Remote",
   },
   fr: {
@@ -28,9 +28,9 @@ const words = {
     servicesLabel: "Ce que je livre", servicesTitle: "Un studio concentré sur votre entreprise.",
     services: [["Stratégie + structure", "Un message clair, un plan de pages et un parcours de conversion avant le design visuel."], ["Design + mouvement", "Une interface distinctive avec animation utile, hiérarchie forte et lecture accessible."], ["Développement + intégration", "Un site adaptatif relié à votre domaine, CMS, base de données ou plateforme existante."]],
     process: ["Découvrir", "Designer", "Bâtir", "Lancer"], processCopy: "Une direction fonctionnelle, des aperçus fréquents et un transfert propre. Pas des mois de maquettes isolées.",
-    requestLabel: "Demande de projet", requestTitle: "Expliquez-moi ce que le site doit accomplir.", requestIntro: "Partagez l’essentiel. Je révise la demande, réponds par courriel et confirme une plage libre avant d’envoyer l’invitation Microsoft Teams.", email: "Ou écrire directement",
+    requestLabel: "Demande de projet", requestTitle: "Expliquez-moi ce que le site doit accomplir.", requestIntro: "Partagez l’essentiel. Je révise la demande, réponds par courriel et confirme une plage libre avant d’envoyer l’invitation Microsoft Teams.", email: "Ou écrire directement", portfolio: "Voir mon portfolio professionnel", flexible: "Flexible",
     labels: { name: "Votre nom", email: "Adresse courriel", company: "Entreprise / organisme", website: "Site actuel (facultatif)", service: "De quoi avez-vous besoin?", budget: "Budget estimé", message: "Que doit améliorer le nouveau site?", call: "Date préférée pour Teams", time: "Heure préférée", teams: "Je souhaite un appel découverte sur Microsoft Teams" },
-    options: ["Nouveau site", "Refonte de site", "Page d’atterrissage", "Rafraîchissement visuel", "Intégration à une plateforme existante"], budgets: ["Pas encore certain", "2 k$–4 k$ CAD", "4 k$–8 k$ CAD", "8 k$–15 k$ CAD", "15 k$+ CAD"],
+    options: ["Nouveau site", "Refonte de site", "Page d’atterrissage", "Rafraîchissement visuel", "Intégration à une plateforme existante"], budgets: ["Pas encore certain", "500 $–1 k$ CAD", "2 k$–4 k$ CAD", "4 k$–8 k$ CAD", "8 k$–15 k$ CAD", "15 k$+ CAD"],
     submit: "Préparer ma demande", privacy: "Ceci ouvre un courriel préparé pour Mike. La plage horaire est confirmée avant l’envoi de l’invitation Teams.", ready: "Votre demande est prête dans votre application courriel.", footer: "Design web indépendant · Ottawa / Montréal / À distance",
   },
 };
@@ -40,9 +40,12 @@ type Language = keyof typeof words;
 export default function Portfolio() {
   const [language, setLanguage] = useState<Language>("en");
   const [submitted, setSubmitted] = useState(false);
+  const [meetingDate, setMeetingDate] = useState("");
   const heroRef = useRef<HTMLElement>(null);
   const t = words[language];
   const today = new Date().toISOString().split("T")[0];
+  const isWeekend = meetingDate ? [0, 6].includes(new Date(`${meetingDate}T12:00:00`).getDay()) : false;
+  const meetingTimes = isWeekend ? ["09:30", "11:00", "13:30", "15:00", "17:30"] : ["18:00", "19:00", "20:00"];
 
   useEffect(() => {
     const nodes = document.querySelectorAll<HTMLElement>("[data-reveal]");
@@ -127,14 +130,14 @@ export default function Portfolio() {
       </section>
 
       <section className="request compact-section" id="request">
-        <div className="request-intro" data-reveal><p>{t.requestLabel}</p><h2>{t.requestTitle}</h2><p>{t.requestIntro}</p><a href="mailto:mmkanyatsi@gmail.com">{t.email}<strong>mmkanyatsi@gmail.com</strong></a><div className="calendar-mark" aria-hidden="true"><span>TEAMS</span><b>30</b><i>MIN</i></div></div>
+        <div className="request-intro" data-reveal><p>{t.requestLabel}</p><h2>{t.requestTitle}</h2><p>{t.requestIntro}</p><div className="contact-links"><a href="mailto:mmkanyatsi@gmail.com">{t.email}<strong>mmkanyatsi@gmail.com</strong></a><a href="https://mikekanyatsi-portfolio.vercel.app" target="_blank" rel="noreferrer">{t.portfolio}<strong>Data + technology ↗</strong></a></div><div className="calendar-mark" aria-hidden="true"><span>TEAMS</span><b>30</b><i>MIN</i></div></div>
         <form className="request-form" onSubmit={submitRequest} data-reveal>
           <div className="field"><label htmlFor="name">{t.labels.name}</label><input id="name" name="name" autoComplete="name" required /></div><div className="field"><label htmlFor="email">{t.labels.email}</label><input id="email" name="email" type="email" autoComplete="email" required /></div>
           <div className="field"><label htmlFor="company">{t.labels.company}</label><input id="company" name="company" autoComplete="organization" required /></div><div className="field"><label htmlFor="website">{t.labels.website}</label><input id="website" name="website" type="url" placeholder="https://" /></div>
           <div className="field"><label htmlFor="service">{t.labels.service}</label><select id="service" name="service" required defaultValue=""><option value="" disabled>—</option>{t.options.map((option) => <option key={option}>{option}</option>)}</select></div><div className="field"><label htmlFor="budget">{t.labels.budget}</label><select id="budget" name="budget" required defaultValue=""><option value="" disabled>—</option>{t.budgets.map((option) => <option key={option}>{option}</option>)}</select></div>
           <div className="field full"><label htmlFor="message">{t.labels.message}</label><textarea id="message" name="message" rows={4} required /></div>
           <label className="teams-choice"><input type="checkbox" name="teams" defaultChecked /><span><i>✓</i>{t.labels.teams}</span></label>
-          <div className="field"><label htmlFor="date">{t.labels.call}</label><input id="date" name="date" type="date" min={today} /></div><div className="field"><label htmlFor="time">{t.labels.time}</label><select id="time" name="time" defaultValue=""><option value="">Flexible</option><option>09:30</option><option>11:00</option><option>13:30</option><option>15:00</option><option>17:30</option></select></div>
+          <div className="field"><label htmlFor="date">{t.labels.call}</label><input id="date" name="date" type="date" min={today} value={meetingDate} onChange={(event) => setMeetingDate(event.target.value)} /></div><div className="field"><label htmlFor="time">{t.labels.time}</label><select id="time" name="time" defaultValue=""><option value="">{t.flexible}</option>{meetingTimes.map((time) => <option key={time}>{time}</option>)}</select></div>
           <div className="form-footer"><p>{submitted ? t.ready : t.privacy}</p><button type="submit">{t.submit}<span>↗</span></button></div>
         </form>
       </section>

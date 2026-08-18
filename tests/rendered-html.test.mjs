@@ -33,6 +33,23 @@ test("server-renders the portfolio and live project previews", async () => {
   assert.match(html, /Luma Dental/);
   assert.match(html, /luma-preview\.png/);
   assert.match(html, /Your website could be here/);
+  assert.match(html, /Mike \/ Web \| Freelance Web Designer in Ottawa/);
+  assert.match(html, /icon\.svg/);
+  assert.match(html, /application\/ld\+json/);
+  assert.match(html, /Website design, redesign and development/);
+});
+
+test("publishes crawl rules and a sitemap", async () => {
+  const robotsResponse = await render("/robots.txt");
+  assert.equal(robotsResponse.status, 200);
+  const robots = await robotsResponse.text();
+  assert.match(robots, /Allow: \//);
+  assert.match(robots, /Disallow: \/api\//);
+  assert.match(robots, /Sitemap: https:\/\/mikekanyatsi\.vercel\.app\/sitemap\.xml/);
+
+  const sitemapResponse = await render("/sitemap.xml");
+  assert.equal(sitemapResponse.status, 200);
+  assert.match(await sitemapResponse.text(), /https:\/\/mikekanyatsi\.vercel\.app/);
 });
 
 test("renders the complete project request and Teams preference flow", async () => {
